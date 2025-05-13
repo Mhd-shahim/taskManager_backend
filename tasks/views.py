@@ -36,3 +36,16 @@ class TaskDelete(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+class EditTask(APIView):
+    def post(self, request, id=None):
+        if id:
+            task = get_object_or_404(tasks, pk=id)
+            serializer = TaskSerializer(task, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status.HTTP_404_NOT_FOUND)
